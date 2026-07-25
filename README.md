@@ -6,7 +6,7 @@
 
 A native macOS prompt wheel for the five instructions you actually use.
 
-[中文](#中文) · [Download Alpha](https://github.com/LLLc1018com-arch/PromptHalo/releases/latest) · [Report a Bug](https://github.com/LLLc1018com-arch/PromptHalo/issues/new?template=bug_report.yml)
+[中文](#中文) · [Download Alpha](https://github.com/LLLc1018com-arch/PromptHalo/releases/tag/v0.3.0-alpha) · [Report a Bug](https://github.com/LLLc1018com-arch/PromptHalo/issues/new?template=bug_report.yml)
 
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-black?logo=apple)
 ![Swift 6.1+](https://img.shields.io/badge/Swift-6.1%2B-F05138?logo=swift&logoColor=white)
@@ -69,7 +69,7 @@ The starter prompts were rewritten for PromptHalo after reviewing recent high-en
 
 ## Install the Alpha
 
-1. Download the latest ZIP from [GitHub Releases](https://github.com/LLLc1018com-arch/PromptHalo/releases/latest).
+1. Download the Alpha ZIP from [GitHub Releases](https://github.com/LLLc1018com-arch/PromptHalo/releases/tag/v0.3.0-alpha).
 2. Unzip it and move `PromptHalo.app` to `/Applications`.
 3. Because the current alpha is not yet Apple-notarized, macOS may require Control-clicking the app and choosing **Open**.
 4. In **System Settings → Privacy & Security → Accessibility**, allow PromptHalo.
@@ -158,7 +158,7 @@ PromptHalo 是一个只活在 Mac 菜单栏里的 Prompt 喊话轮盘。
 
 ### 使用
 
-1. 从 [GitHub Releases](https://github.com/LLLc1018com-arch/PromptHalo/releases/latest) 下载 Alpha ZIP。
+1. 从 [GitHub Releases](https://github.com/LLLc1018com-arch/PromptHalo/releases/tag/v0.3.0-alpha) 下载 Alpha ZIP。
 2. 解压后把 `PromptHalo.app` 放进“应用程序”。
 3. 当前版本尚未完成 Apple 公证，第一次打开可能需要右键应用并选择“打开”。
 4. 在“系统设置 → 隐私与安全性 → 辅助功能”中允许 PromptHalo。
