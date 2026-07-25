@@ -9,7 +9,7 @@ A native macOS prompt wheel for the five instructions you actually use.
 [中文](#中文) · [Download Alpha](https://github.com/LLLc1018com-arch/PromptHalo/releases/latest) · [Report a Bug](https://github.com/LLLc1018com-arch/PromptHalo/issues/new?template=bug_report.yml)
 
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-black?logo=apple)
-![Swift 6.2](https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white)
+![Swift 6.1+](https://img.shields.io/badge/Swift-6.1%2B-F05138?logo=swift&logoColor=white)
 ![Local First](https://img.shields.io/badge/data-local--first-35C759)
 ![Alpha](https://img.shields.io/badge/status-alpha-orange)
 
@@ -82,7 +82,7 @@ The release is intentionally marked **pre-release** until Developer ID signing a
 Requirements:
 
 - macOS 14 or later
-- Swift 6.2 Command Line Tools
+- Swift 6.1 or newer Command Line Tools
 - No full Xcode installation required
 
 ```bash
