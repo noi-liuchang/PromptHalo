@@ -1,0 +1,50 @@
+name: Bug report
+description: Report a reproducible PromptHalo problem
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing PromptHalo. Do not paste private prompts, clipboard contents, or credentials.
+  - type: input
+    id: version
+    attributes:
+      label: PromptHalo version
+      placeholder: 0.3.0
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version and Mac model
+      placeholder: macOS 15.5, MacBook Air M3
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Target app
+      placeholder: ChatGPT, Chrome, Feishu, TextEdit...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Give the shortest reliable sequence.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

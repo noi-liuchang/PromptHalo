@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a focused improvement to the core workflow
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user situation before suggesting a solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: core
+    attributes:
+      label: Why does it belong in the five-slot core?
+      description: PromptHalo prioritizes reliability before feature breadth.
+    validations:
+      required: true
