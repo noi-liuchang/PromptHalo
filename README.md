@@ -20,7 +20,7 @@ The shortest, least disruptive path I could make from “I need that prompt” t
 </p>
 
 <p align="center">
-  <sub>Hold Left Option → choose a slot → release. PromptHalo inserts the prompt automatically.<br>The ⌘V badge is the app's emitted paste event, not an extra user action.</sub>
+  <sub>Hold Left Option → choose a slot → release. PromptHalo inserts the prompt automatically.</sub>
 </p>
 
 ## Why I built this
@@ -270,8 +270,6 @@ PromptHalo 不负责帮你收藏所有好 Prompt。它只想让你真正练熟�
 ### 核心操作
 
 长按左 `Option`，按下 `1–5` 或移动鼠标，松手后完整 Prompt 直接进入当前输入框。
-
-演示中的 `⌘V` 标识是 PromptHalo 自动发出的插入事件，不是用户需要多按的一步。
 
 ### 当前功能
 
