@@ -203,7 +203,7 @@ struct ManagerView: View {
                     .font(.subheadline.weight(.medium))
 
                 Text(
-                    state.triggerHotKey.isOptionOnly
+                    state.triggerHotKey.isSingleKeyTrigger
                         ? language.text(
                             "单独长按即可呼出",
                             "Hold the key to open"
@@ -271,7 +271,7 @@ struct ManagerView: View {
     }
 
     private var triggerInstruction: String {
-        if state.triggerHotKey.isOptionOnly {
+        if state.triggerHotKey.isSingleKeyTrigger {
             return language.text(
                 "长按 \(state.triggerHotKey.displayString) 呼出；"
                     + "再按 1–5，或移动鼠标后松开。",
@@ -291,7 +291,7 @@ struct ManagerView: View {
         if state.accessibilityGranted {
             return language.text("可直接插入", "Direct insert ready")
         }
-        return state.triggerHotKey.isOptionOnly
+        return state.triggerHotKey.isSingleKeyTrigger
             ? language.text(
                 "需要授权才能呼出",
                 "Permission required"
@@ -300,10 +300,10 @@ struct ManagerView: View {
     }
 
     private var permissionHelpText: String {
-        if state.triggerHotKey.isOptionOnly {
+        if state.triggerHotKey.isSingleKeyTrigger {
             return language.text(
-                "单独 Option 呼出和自动插入都需要“辅助功能”权限。授权后无需重新设置快捷键。",
-                "Using Option alone and inserting automatically require Accessibility permission. You will not need to set the trigger again."
+                "单键长按呼出和自动插入都需要“辅助功能”权限。授权后无需重新设置呼出键。",
+                "Long-pressing one key and inserting automatically require Accessibility permission. You will not need to set the trigger again."
             )
         }
         return language.text(

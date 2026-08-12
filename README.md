@@ -16,11 +16,11 @@ The shortest, least disruptive path I could make from “I need that prompt” t
 </div>
 
 <p align="center">
-  <img src="docs/prompt-halo-demo.gif" width="92%" alt="Hold Left Option, choose one of five prompts, and release to insert it">
+  <img src="docs/prompt-halo-demo.gif" width="92%" alt="Hold Tab, choose one of five prompts, and release to insert it">
 </p>
 
 <p align="center">
-  <sub>Hold Left Option → choose a slot → release. PromptHalo inserts the prompt automatically.</sub>
+  <sub>Hold Tab → choose a slot → release. PromptHalo inserts the prompt automatically.</sub>
 </p>
 
 ## Why I built this
@@ -83,7 +83,7 @@ PromptHalo is not trying to help you collect every good prompt. It is trying to 
 ## How it works
 
 ```text
-Hold Left Option
+Hold Tab
         ↓
 Choose 1–5 or move the pointer
         ↓
@@ -101,8 +101,8 @@ The full prompt is inserted into the active text field
 
 - Native SwiftUI manager and AppKit non-activating radial wheel
 - Five fixed quick slots, selected by number or pointer direction
-- Long-press Left `Option` by default
-- Customizable trigger, including Right `Option` or a normal key combination
+- Long-press `Tab` by default; a quick Tab press keeps its normal macOS behavior
+- Customizable trigger, including Left or Right `Option` or a normal key combination
 - Direct insertion into the active text field
 - Clipboard snapshot and restoration after insertion
 - Local JSON storage, search, duplicate, trash, import, and export
@@ -132,7 +132,10 @@ The starter prompts were rewritten for PromptHalo after reviewing recent high-en
 2. Unzip it and move `PromptHalo.app` to `/Applications`.
 3. Because the current alpha is not yet Apple-notarized, macOS may require Control-clicking the app and choosing **Open**.
 4. In **System Settings → Privacy & Security → Accessibility**, allow PromptHalo.
-5. Focus any text field, hold Left `Option` for about 0.22 seconds, choose `1–5`, then release.
+5. Focus any text field, hold `Tab` for about 0.22 seconds, choose `1–5`, then release.
+
+The downloadable `v0.3.0-alpha` binary still uses Left `Option`. The Tab default is
+currently available from `main` and will ship in the next Alpha binary.
 
 The release is intentionally marked **pre-release** until Developer ID signing and notarization are in place.
 
@@ -171,7 +174,8 @@ Accessibility permission is used to monitor the configured trigger and emit past
 
 - Lightweight core checks: `6/6`
 - Universal build: `arm64 + x86_64`
-- Left `Option` → slot `1` → direct TextEdit insertion: passed
+- Quick `Tab` → native Tab behavior: passed
+- Long `Tab` → slot `1` → direct TextEdit insertion: passed
 - Existing prompt data preserved when switching UI language: passed
 
 Run the same checks locally with:
@@ -269,12 +273,12 @@ PromptHalo 不负责帮你收藏所有好 Prompt。它只想让你真正练熟�
 
 ### 核心操作
 
-长按左 `Option`，按下 `1–5` 或移动鼠标，松手后完整 Prompt 直接进入当前输入框。
+长按 `Tab`，按下 `1–5` 或移动鼠标，松手后完整 Prompt 直接进入当前输入框。短按 `Tab` 仍保持 Mac 原有行为。
 
 ### 当前功能
 
 - 五个固定快捷位，支持数字和方向选择
-- 默认长按左 `Option`，也可自定义右 `Option` 或普通组合键
+- 默认长按 `Tab`，也可自定义左/右 `Option` 或普通组合键
 - 自动插入并恢复原剪贴板
 - 本地 JSON 存储，不注册、不登录、不联网
 - 搜索、新建、副本、最近删除、导入与导出
@@ -287,6 +291,9 @@ PromptHalo 不负责帮你收藏所有好 Prompt。它只想让你真正练熟�
 2. 解压后把 `PromptHalo.app` 放进“应用程序”。
 3. 当前版本尚未完成 Apple 公证，第一次打开可能需要右键应用并选择“打开”。
 4. 在“系统设置 → 隐私与安全性 → 辅助功能”中允许 PromptHalo。
-5. 在任意输入框长按左 `Option`，选择 `1–5`，松开后自动插入。
+5. 在任意输入框长按 `Tab`，选择 `1–5`，松开后自动插入。
+
+当前公开的 `v0.3.0-alpha` 安装包仍以左 `Option` 为默认键；`main`
+分支已改为 Tab，将随下一个 Alpha 安装包发布。
 
 这是一个 Build in Public 的 Alpha。先把真正高频的 Prompt 变成肌肉记忆，再考虑更大的功能。

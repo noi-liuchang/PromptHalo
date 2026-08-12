@@ -143,7 +143,7 @@ private struct PromptHaloMenu: View {
     }
 
     private var menuInstruction: String {
-        if state.triggerHotKey.isOptionOnly {
+        if state.triggerHotKey.isSingleKeyTrigger {
             return language.text(
                 "长按 \(state.triggerHotKey.displayString) · 方向或数字 1–5",
                 "Hold \(state.triggerHotKey.displayString) · direction or 1–5"

@@ -7,16 +7,20 @@ struct TriggerHotKey: Codable, Equatable {
     let modifiers: UInt32
 
     static let defaultValue = TriggerHotKey(
-        keyCode: UInt32(kVK_Option),
-        modifiers: UInt32(optionKey)
+        keyCode: UInt32(kVK_Tab),
+        modifiers: 0
     )
 
-    private static let legacyDefaultValue = TriggerHotKey(
+    private static let legacyOptionSpaceDefaultValue = TriggerHotKey(
         keyCode: UInt32(kVK_Space),
         modifiers: UInt32(optionKey)
     )
+    private static let legacyLeftOptionDefaultValue = TriggerHotKey(
+        keyCode: UInt32(kVK_Option),
+        modifiers: UInt32(optionKey)
+    )
     private static let defaultsKey = "triggerHotKey.v1"
-    private static let defaultMigrationKey = "triggerHotKey.leftOptionDefault.v2"
+    private static let defaultMigrationKey = "triggerHotKey.tabDefault.v3"
 
     static func load(defaults: UserDefaults = .standard) -> TriggerHotKey {
         guard
@@ -28,10 +32,9 @@ struct TriggerHotKey: Codable, Equatable {
             return .defaultValue
         }
 
-        if
-            value == legacyDefaultValue,
-            !defaults.bool(forKey: defaultMigrationKey)
-        {
+        if !defaults.bool(forKey: defaultMigrationKey),
+           value == legacyOptionSpaceDefaultValue
+                || value == legacyLeftOptionDefaultValue {
             defaults.set(true, forKey: defaultMigrationKey)
             defaultValue.save(defaults: defaults)
             return .defaultValue
@@ -78,11 +81,22 @@ struct TriggerHotKey: Codable, Equatable {
         isOptionOnly && keyCode == UInt32(kVK_RightOption)
     }
 
+    var isTabOnly: Bool {
+        modifiers == 0 && keyCode == UInt32(kVK_Tab)
+    }
+
+    var isSingleKeyTrigger: Bool {
+        isOptionOnly || isTabOnly
+    }
+
     var displayString: String {
         if isOptionOnly {
             return isRightOptionOnly
                 ? AppLanguageSettings.shared.text("右 ⌥", "Right ⌥")
                 : AppLanguageSettings.shared.text("左 ⌥", "Left ⌥")
+        }
+        if isTabOnly {
+            return "Tab ⇥"
         }
 
         var result = ""
@@ -105,7 +119,7 @@ struct TriggerHotKey: Codable, Equatable {
     }
 
     var validationMessage: String? {
-        if isOptionOnly {
+        if isSingleKeyTrigger {
             return nil
         }
 
@@ -123,8 +137,8 @@ struct TriggerHotKey: Codable, Equatable {
         ]
         guard !modifierOnlyKeyCodes.contains(keyCode) else {
             return AppLanguageSettings.shared.text(
-                "单键长按目前只支持左/右 Option；其他修饰键请再搭配一个普通键。",
-                "Only Left or Right Option can be used alone. Pair other modifier keys with a regular key."
+                "单键长按支持 Tab 和左/右 Option；其他修饰键请再搭配一个普通键。",
+                "Tab and Left or Right Option can be used alone. Pair other modifier keys with a regular key."
             )
         }
 
