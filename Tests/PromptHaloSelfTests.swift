@@ -65,24 +65,29 @@ struct PromptHaloSelfTests {
 
         try check(
             TriggerHotKey.defaultValue.keyCode
-                == UInt32(kVK_Option),
-            "The default trigger must use Left Option"
+                == UInt32(kVK_Tab),
+            "The default trigger must use Tab"
         )
         try check(
             TriggerHotKey.defaultValue.modifiers
-                == UInt32(optionKey),
-            "The default trigger must be Option-only"
+                == 0,
+            "The default Tab trigger must not require modifiers"
         )
         try check(
-            TriggerHotKey.defaultValue.isOptionOnly
-                && !TriggerHotKey.defaultValue.isRightOptionOnly,
-            "The default trigger must be Left Option only"
+            TriggerHotKey.defaultValue.isTabOnly
+                && TriggerHotKey.defaultValue.isSingleKeyTrigger,
+            "The default trigger must be Tab-only"
+        )
+        try check(
+            TriggerHotKey.defaultValue.validationMessage == nil,
+            "Tab-only must be accepted as a valid long-press trigger"
         )
 
         try checkLegacyShortcutMigration()
+        try checkCustomShortcutPreservation()
         try checkExistingPromptPreservation()
 
-        print("PromptHalo self-tests: 6/6 passed")
+        print("PromptHalo self-tests: all passed")
     }
 
     private static func check(
@@ -95,32 +100,60 @@ struct PromptHaloSelfTests {
     }
 
     private static func checkLegacyShortcutMigration() throws {
+        try checkLegacyShortcutMigration(
+            TriggerHotKey(
+                keyCode: UInt32(kVK_Space),
+                modifiers: UInt32(optionKey)
+            ),
+            label: "Option-Space"
+        )
+        try checkLegacyShortcutMigration(
+            TriggerHotKey(
+                keyCode: UInt32(kVK_Option),
+                modifiers: UInt32(optionKey)
+            ),
+            label: "Left Option"
+        )
+    }
+
+    private static func checkLegacyShortcutMigration(
+        _ legacy: TriggerHotKey,
+        label: String
+    ) throws {
         let suiteName = "PromptHaloSelfTests.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suiteName) else {
-            throw SelfTestFailure.failed(
-                "Could not create isolated UserDefaults"
-            )
+            throw SelfTestFailure.failed("Could not create isolated UserDefaults")
         }
-        defer {
-            defaults.removePersistentDomain(forName: suiteName)
-        }
+        defer { defaults.removePersistentDomain(forName: suiteName) }
 
-        let legacy = TriggerHotKey(
+        defaults.set(try JSONEncoder().encode(legacy), forKey: "triggerHotKey.v1")
+
+        try check(
+            TriggerHotKey.load(defaults: defaults) == .defaultValue,
+            "Legacy \(label) should migrate to Tab"
+        )
+        try check(
+            TriggerHotKey.load(defaults: defaults) == .defaultValue,
+            "Migrated Tab should remain stable"
+        )
+    }
+
+    private static func checkCustomShortcutPreservation() throws {
+        let suiteName = "PromptHaloSelfTests.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName) else {
+            throw SelfTestFailure.failed("Could not create isolated UserDefaults")
+        }
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let custom = TriggerHotKey(
             keyCode: UInt32(kVK_Space),
-            modifiers: UInt32(optionKey)
+            modifiers: UInt32(controlKey)
         )
-        defaults.set(
-            try JSONEncoder().encode(legacy),
-            forKey: "triggerHotKey.v1"
-        )
+        defaults.set(try JSONEncoder().encode(custom), forKey: "triggerHotKey.v1")
 
         try check(
-            TriggerHotKey.load(defaults: defaults) == .defaultValue,
-            "Legacy Option-Space should migrate to Left Option"
-        )
-        try check(
-            TriggerHotKey.load(defaults: defaults) == .defaultValue,
-            "Migrated Left Option should remain stable"
+            TriggerHotKey.load(defaults: defaults) == custom,
+            "A customized trigger must not be replaced by the Tab migration"
         )
     }
 

@@ -2,6 +2,19 @@
 
 All notable PromptHalo changes are documented here.
 
+## Unreleased
+
+### Changed
+
+- Default trigger changed from long-press Left `Option` to long-press `Tab`
+- Existing users still on the previous default migrate once; customized triggers are preserved
+- Quick `Tab` presses are replayed to the active app, so normal Tab behavior remains intact
+
+### Verified
+
+- Quick Tab passthrough in TextEdit
+- Long Tab + slot 1 direct insertion into TextEdit
+
 ## 0.3.0 — 2026-07-26
 
 ### Added

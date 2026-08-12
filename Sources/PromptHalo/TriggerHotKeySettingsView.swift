@@ -50,8 +50,8 @@ struct TriggerHotKeySettingsView: View {
                         Text(
                             state.isRecordingTriggerHotKey
                                 ? language.text(
-                                    "按下 Option 后松开，或按一个组合键…",
-                                    "Press and release Option, or enter a shortcut…"
+                                    "按下 Tab 或 Option 后松开，或按一个组合键…",
+                                    "Press and release Tab or Option, or enter a shortcut…"
                                 )
                                 : language.text(
                                     "当前呼出键",
@@ -108,8 +108,8 @@ struct TriggerHotKeySettingsView: View {
 
             Text(
                 language.text(
-                    "支持单独长按左/右 Option，也支持组合键；Esc 取消，1–5 保留给 Prompt 选择。",
-                    "Use Left or Right Option alone, or a key combination. Esc cancels; 1–5 are reserved for Prompt selection."
+                    "支持单独长按 Tab 或左/右 Option，也支持组合键；短按 Tab 仍保持系统原有行为。Esc 取消，1–5 保留给 Prompt 选择。",
+                    "Use Tab or Left or Right Option alone, or a key combination. A quick Tab press keeps its normal macOS behavior. Esc cancels; 1–5 are reserved for Prompt selection."
                 )
             )
                 .font(.caption)
@@ -127,8 +127,8 @@ struct TriggerHotKeySettingsView: View {
             HStack {
                 Button(
                     language.text(
-                        "恢复默认左 ⌥",
-                        "Restore Default Left ⌥"
+                        "恢复默认 Tab",
+                        "Restore Default Tab"
                     )
                 ) {
                     state.resetTriggerHotKey()

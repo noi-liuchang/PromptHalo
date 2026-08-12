@@ -98,6 +98,7 @@ final class HotKeyManager {
     private var menuIsActive = false
     private var wasCancelled = false
     private var modifierSuppressedUntilRelease = false
+    private var replayUnmodifiedTriggerOnRelease = false
 
     init() {
         installHandler()
@@ -215,10 +216,12 @@ final class HotKeyManager {
         guard !triggerIsDown else { return }
         triggerIsDown = true
         wasCancelled = false
+        replayUnmodifiedTriggerOnRelease = activeTrigger?.isTabOnly == true
 
-        let delay = activeTrigger?.isOptionOnly == true ? 0.22 : 0.15
+        let delay = activeTrigger?.isSingleKeyTrigger == true ? 0.22 : 0.15
         let workItem = DispatchWorkItem { [weak self] in
             guard let self, self.triggerIsDown else { return }
+            self.replayUnmodifiedTriggerOnRelease = false
             self.menuIsActive = true
             self.registerContextHotKeys()
             self.onMenuShown?()
@@ -228,11 +231,19 @@ final class HotKeyManager {
     }
 
     private func triggerReleased() {
+        let shouldReplayUnmodifiedTrigger = replayUnmodifiedTriggerOnRelease
+            && !menuIsActive
+        replayUnmodifiedTriggerOnRelease = false
         triggerIsDown = false
         holdWorkItem?.cancel()
         holdWorkItem = nil
 
-        guard menuIsActive else { return }
+        guard menuIsActive else {
+            if shouldReplayUnmodifiedTrigger {
+                replayCurrentUnmodifiedTrigger()
+            }
+            return
+        }
         menuIsActive = false
         unregisterContextHotKeys()
 
@@ -347,7 +358,12 @@ final class HotKeyManager {
     }
 
     private func handleMonitoredInput(_ input: MonitoredInput) {
-        guard let activeTrigger, activeTrigger.isOptionOnly else { return }
+        guard let activeTrigger else { return }
+        if activeTrigger.isTabOnly {
+            handleTabOnlyInput(input, trigger: activeTrigger)
+            return
+        }
+        guard activeTrigger.isOptionOnly else { return }
 
         var watchedOptionDown = activeTrigger.isRightOptionOnly
             ? input.rightOptionDown
@@ -413,6 +429,42 @@ final class HotKeyManager {
         }
     }
 
+    private func handleTabOnlyInput(
+        _ input: MonitoredInput,
+        trigger: TriggerHotKey
+    ) {
+        switch input.kind {
+        case .flagsChanged:
+            return
+
+        case .keyDown:
+            guard triggerIsDown else { return }
+            if input.keyCode == trigger.keyCode {
+                return
+            }
+
+            let contextKeyCodes: Set<UInt32> = [
+                UInt32(kVK_ANSI_1),
+                UInt32(kVK_ANSI_2),
+                UInt32(kVK_ANSI_3),
+                UInt32(kVK_ANSI_4),
+                UInt32(kVK_ANSI_5),
+                UInt32(kVK_Escape)
+            ]
+            if menuIsActive && contextKeyCodes.contains(input.keyCode) {
+                return
+            }
+
+            replayUnmodifiedTriggerOnRelease = false
+            cancelCurrentGesture()
+
+        case .mouseDown:
+            guard triggerIsDown else { return }
+            replayUnmodifiedTriggerOnRelease = false
+            cancelCurrentGesture()
+        }
+    }
+
     private func suppressModifierGesture() {
         modifierSuppressedUntilRelease = true
         cancelCurrentGesture()
@@ -475,8 +527,60 @@ final class HotKeyManager {
         UnregisterEventHotKey(reference)
     }
 
+    private func replayCurrentUnmodifiedTrigger() {
+        guard
+            let trigger = activeTrigger,
+            trigger.isTabOnly,
+            let registrationID = activeTriggerID
+        else { return }
+
+        unregister(id: registrationID)
+        activeTriggerID = nil
+
+        let source = CGEventSource(stateID: .combinedSessionState)
+        let keyCode = CGKeyCode(trigger.keyCode)
+        let keyDown = CGEvent(
+            keyboardEventSource: source,
+            virtualKey: keyCode,
+            keyDown: true
+        )
+        let keyUp = CGEvent(
+            keyboardEventSource: source,
+            virtualKey: keyCode,
+            keyDown: false
+        )
+        keyDown?.flags = []
+        keyUp?.flags = []
+        keyDown?.post(tap: .cghidEventTap)
+        keyUp?.post(tap: .cghidEventTap)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) { [weak self] in
+            guard let self,
+                  self.activeTrigger == trigger,
+                  self.activeTriggerID == nil else { return }
+
+            switch self.makeRegistration(
+                id: registrationID,
+                keyCode: trigger.keyCode,
+                modifiers: trigger.modifiers
+            ) {
+            case let .success(reference):
+                self.hotKeyRefs[registrationID] = reference
+                self.activeTriggerID = registrationID
+            case let .failure(.failed(status)):
+                self.onError?(
+                    AppLanguageSettings.shared.text(
+                        "Tab 呼出键暂时无法恢复（错误 \(status)）",
+                        "The Tab trigger could not be restored (error \(status))"
+                    )
+                )
+            }
+        }
+    }
+
     private func cancelCurrentGesture() {
         triggerIsDown = false
+        replayUnmodifiedTriggerOnRelease = false
         holdWorkItem?.cancel()
         holdWorkItem = nil
 
